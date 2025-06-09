@@ -1,5 +1,9 @@
+
 <?php
 session_start();
+require_once 'db_connect.php';
+ini_set('display_errors', 0); // Enable temporarily for debugging: ini_set('display_errors', 1);
+error_reporting(E_ALL);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,199 +17,75 @@ session_start();
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Custom styles for lively design */
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #fff7e6, #e0f7fa);
-    }
-    .sticky-header {
-      background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
-      transition: all 0.3s ease;
-    }
+    body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #fff7e6, #e0f7fa); }
+    .sticky-header { background: linear-gradient(90deg, #ff6b6b, #4ecdc4); transition: all 0.3s ease; }
     .hero-section {
-      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://via.placeholder.com/1200x400?text=Helping+Hands+Joyful+Community') center/cover;
+      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://picsum.photos/1200/400?text=Helping+Hands+Joyful+Community') center/cover;
       background-attachment: fixed;
       animation: fadeIn 2s ease-in;
     }
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-    .project-card, .contact-form {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border-radius: 15px;
-    }
-    .project-card:hover, .contact-form:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-    }
-    .gallery-img {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border-radius: 10px;
-    }
-    .gallery-img:hover {
-      transform: scale(1.1) rotate(2deg);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
-    .btn-primary {
-      background: linear-gradient(45deg, #ff6b6b, #ff8e53);
-      transition: transform 0.2s ease;
-    }
-    .btn-primary:hover {
-      transform: scale(1.1);
-      background: linear-gradient(45deg, #ff8e53, #ff6b6b);
-    }
-    #lightbox {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      animation: slideIn 0.5s ease;
-    }
-    #lightbox.active {
-      display: flex;
-    }
-    @keyframes slideIn {
-      0% { transform: translateY(50px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-    .hamburger div {
-      background: white;
-      transition: all 0.3s ease;
-    }
-    .hamburger.active div:nth-child(1) {
-      transform: rotate(45deg) translate(5px, 5px);
-    }
-    .hamburger.active div:nth-child(2) {
-      opacity: 0;
-    }
-    .hamburger.active div:nth-child(3) {
-      transform: rotate(-45deg) translate(7px, -7px);
-    }
+    @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+    .project-card, .contact-form { transition: transform 0.3s ease, box-shadow 0.3s ease; border-radius: 15px; }
+    .project-card:hover, .contact-form:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); }
+    .gallery-img { transition: transform 0.3s ease, box-shadow 0.3s ease; border-radius: 10px; }
+    .gallery-img:hover { transform: scale(1.1) rotate(2deg); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
+    .btn-primary { background: linear-gradient(45deg, #ff6b6b, #ff8e53); transition: transform 0.2s ease; }
+    .btn-primary:hover { transform: scale(1.1); background: linear-gradient(45deg, #ff8e53, #ff6b6b); }
+    #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); justify-content: center; align-items: center; z-index: 1000; animation: slideIn 0.5s ease; }
+    #lightbox.active { display: flex; }
+    @keyframes slideIn { 0% { transform: translateY(50px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+    .hamburger { display: none; flex-direction: column; cursor: pointer; width: 30px; height: 24px; justify-content: space-between; }
+    .hamburger div { background: white; height: 4px; width: 100%; transition: all 0.3s ease; border-radius: 2px; }
+    .hamburger.active div:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.active div:nth-child(2) { opacity: 0; }
+    .hamburger.active div:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
     @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        position: absolute;
-        top: 64px;
-        left: 0;
-        background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
-        padding: 1rem;
-      }
-      .nav-links.active {
-        display: flex;
-        animation: slideDown 0.3s ease;
-      }
-      @keyframes slideDown {
-        0% { transform: translateY(-10px); opacity: 0; }
-        100% { transform: translateY(0); opacity: 1; }
-      }
-      .hamburger {
-        display: flex;
-      }
+      .nav-links { display: none; flex-direction: column; width: 100%; position: absolute; top: 64px; left: 0; background: linear-gradient(90deg, #ff6b6b, #4ecdc4); padding: 1rem; z-index: 40; }
+      .nav-links.active { display: flex; animation: slideDown 0.3s ease; }
+      .nav-links li { margin: 0.5rem 0; }
+      @keyframes slideDown { 0% { transform: translateY(-10px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+      .hamburger { display: flex; }
+      .nav-links a { font-size: 1.25rem; }
     }
-    .social-icon {
-      transition: transform 0.3s ease;
-      fill: white;
-    }
-    .social-icon:hover {
-      transform: scale(1.3);
-      fill: #ffeb3b;
-    }
-    footer {
-      background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
-      position: relative;
-      z-index: 1;
-    }
-    .slideshow-container {
-      position: relative;
-      max-width: 1000px;
-      margin: auto;
-    }
-    .slide {
-      display: none;
-      width: 100%;
-      height: 400px;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-    .slide.active {
-      display: block;
-      animation: fade 1s ease-in-out;
-    }
-    @keyframes fade {
-      from { opacity: 0.4; }
-      to { opacity: 1; }
-    }
-    .prev, .next {
-      cursor: pointer;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: auto;
-      padding: 16px;
-      color: white;
-      font-weight: bold;
-      font-size: 18px;
-      transition: 0.3s ease;
-      border-radius: 0 3px 3px 0;
-      background-color: rgba(0,0,0,0.5);
-    }
-    .next {
-      right: 0;
-      border-radius: 3px 0 0 3px;
-    }
-    .prev:hover, .next:hover {
-      background-color: rgba(0,0,0,0.8);
-    }
-    .dots {
-      text-align: center;
-      padding: 10px 0;
-    }
-    .dot {
-      cursor: pointer;
-      height: 15px;
-      width: 15px;
-      margin: 0 5px;
-      background-color: #bbb;
-      border-radius: 50%;
-      display: inline-block;
-      transition: background-color 0.3s ease;
-    }
-    .dot.active, .dot:hover {
-      background-color: #ff6b6b;
-    }
+    .social-icon { transition: transform 0.3s ease; fill: white; }
+    .social-icon:hover { transform: scale(1.3); fill: #ffeb3b; }
+    footer { background: linear-gradient(90deg, #ff6b6b, #4ecdc4); position: relative; z-index: 1; }
+    .slideshow-container { position: relative; max-width: 1000px; margin: auto; }
+    .slide { display: none; width: 100%; height: 400px; object-fit: cover; border-radius: 10px; }
+    .slide.active { display: block; animation: fade 1s ease-in-out; }
+    @keyframes fade { from { opacity: 0.4; } to { opacity: 1; } }
+    .prev, .next { cursor: pointer; position: absolute; top: 50%; transform: translateY(-50%); width: auto; padding: 16px; color: white; font-weight: bold; font-size: 18px; transition: 0.3s ease; border-radius: 0 3px 3px 0; background-color: rgba(0,0,0,0.5); }
+    .next { right: 0; border-radius: 3px 0 0 3px; }
+    .prev:hover, .next:hover { background-color: rgba(0,0,0,0.8); }
+    .dots { text-align: center; padding: 10px 0; }
+    .dot { cursor: pointer; height: 15px; width: 15px; margin: 0 5px; background-color: #bbb; border-radius: 50%; display: inline-block; transition: background-color 0.3s ease; }
+    .dot.active, .dot:hover { background-color: #ff6b6b; }
+    .fb-post-container { max-width: 500px; margin: 0 auto 1rem; background: #fff; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); padding: 1rem; }
   </style>
 </head>
 <body>
   <!-- Header -->
   <header class="sticky-header text-white sticky top-0 z-50">
-    <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
-      <a href="#home" aria-label="Helping Hands Pwani Home">
-        <img src="images/helping-hands.jpg" alt="Helping Hands Pwani Logo" class="h-12 w-auto object-contain">
+    <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#home" aria-label="Helping Hands Home">
+        <img src="images/helping-hands.jpg" alt="Helping Hands Logo" class="h-12 w-auto object-contain">
       </a>
       <div class="hamburger" onclick="toggleMenu()">
         <div></div><div></div><div></div>
       </div>
       <ul class="nav-links flex space-x-6 md:flex md:items-center">
-        <li><a href="#home" class="hover:underline text-lg" aria-label="Home">Home</a></li>
-        <li><a href="#about" class="hover:underline text-lg" aria-label="About Us">About</a></li>
-        <li><a href="#projects" class="hover:underline text-lg" aria-label="Our Projects">Projects</a></li>
-        <li><a href="#gallery" class="hover:underline text-lg" aria-label="Gallery">Gallery</a></li>
-        <li><a href="#facebook-feed" class="hover:underline text-lg" aria-label="Facebook Feed">Facebook Feed</a></li>
-        <li><a href="#contact" class="hover:underline text-lg" aria-label="Contact Us">Contact</a></li>
+        <li><a href="#home" class="hover:underline text-lg">Home</a></li>
+        <li><a href="#about" class="hover:underline text-lg">About</a></li>
+        <li><a href="#projects" class="hover:underline text-lg">Projects</a></li>
+        <li><a href="#gallery" class="hover:underline text-lg">Gallery</a></li>
+        <li><a href="#facebook-feed" class="hover:underline text-lg">Facebook Feed</a></li>
+        <li><a href="#contact" class="hover:underline text-lg">Contact</a></li>
         <?php if (isset($_SESSION['user_id'])): ?>
-          <li><a href="upload.php" class="hover:underline text-lg" aria-label="Upload Image">Upload</a></li>
-          <li><a href="logout.php" class="hover:underline text-lg" aria-label="Logout">Logout</a></li>
+          <li><a href="upload.php" class="hover:underline text-lg">Upload</a></li>
+          <li><a href="post_facebook.php" class="hover:underline text-lg">Add Post</a></li>
+          <li><a href="logout.php" class="hover:underline text-lg">Logout</a></li>
         <?php else: ?>
-          <li><a href="login.html" class="hover:underline text-lg" aria-label="Login">Login</a></li>
+          <li><a href="login.html" class="hover:underline text-lg">Login</a></li>
         <?php endif; ?>
       </ul>
     </nav>
@@ -214,8 +94,7 @@ session_start();
   <!-- Home Section -->
   <section id="home" class="hero-section h-96 flex items-center justify-center text-center text-white">
     <div class="bg-black bg-opacity-50 p-8 rounded-2xl animate-pulse">
-      <h2 class="text-5xl font-bold mb-4">We are Helping Hands Pwani 
-</h2>
+      <h2 class="text-5xl font-bold mb-4">We are Helping Hands Pwani</h2>
       <p class="text-xl mb-6">Team Kazi & Accountability</p>
       <a href="#contact" class="btn-primary text-white px-6 py-3 rounded-full font-semibold">Get Involved</a>
     </div>
@@ -226,9 +105,9 @@ session_start();
     <div class="container mx-auto px-4">
       <h2 class="text-4xl font-bold text-center mb-8 text-gray-800">About Us</h2>
       <p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
-      A registered NGO with the main aim of helping the orphans, restoration and building of worship
-      houses and schools..feeding  the needy and helping the 
-      less fortunate in the society. We empower while we help create centers around the projects we do.
+        A registered NGO with the main aim of helping the orphans, restoration and building of 
+        worship houses and schools, feeding the needy, and helping the less fortunate in the society.
+        We empower while we help create centers around the projects we do.
       </p>
     </div>
   </section>
@@ -259,7 +138,7 @@ session_start();
     <div class="container mx-auto px-4">
       <h2 class="text-4xl font-bold text-center mb-8 text-gray-800">Gallery</h2>
       <div class="slideshow-container" role="region" aria-label="Image Slideshow">
-        <!-- Slides will be dynamically added via JavaScript -->
+        <p class="text-center text-gray-600" id="gallery-message">Loading images...</p>
         <a class="prev" onclick="changeSlide(-1)" aria-label="Previous Slide">❮</a>
         <a class="next" onclick="changeSlide(1)" aria-label="Next Slide">❯</a>
       </div>
@@ -271,13 +150,34 @@ session_start();
   <section id="facebook-feed" class="bg-gradient-to-r from-blue-100 to-yellow-100 py-16">
     <div class="container mx-auto px-4">
       <h2 class="text-4xl font-bold text-center mb-8 text-gray-800">Our Facebook Updates</h2>
-      <div class="max-w-lg mx-auto bg-white p-6 rounded-2xl shadow-lg">
-        <div class="fb-post"
-             data-href="https://www.facebook.com/share/v/18umVvUbPr/"
-             data-width="500">
-        </div>
+      <div class="max-w-lg mx-auto">
+        <?php
+        try {
+          $stmt = $pdo->query('SELECT post_url, content, posted_at FROM facebook_posts ORDER BY posted_at DESC LIMIT 5');
+          $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          
+          if ($posts) {
+            foreach ($posts as $post) {
+              $post_url = htmlspecialchars($post['post_url']);
+              $content = htmlspecialchars($post['content']);
+              $posted_at = htmlspecialchars(date('F j, Y, g:i a', strtotime($post['posted_at'])));
+              echo '<div class="fb-post-container">';
+              echo '<p class="text-gray-700 mb-2">' . $content . '</p>';
+              echo '<div class="fb-post" data-href="' . $post_url . '" data-width="500" data-show-text="true"></div>';
+              echo '<p class="text-sm text-gray-500 mt-2 mb-2 text-center">Posted on: ' . $posted_at . '</p>';
+              echo '<p class="text-center text-sm text-gray-600"><a href="' . $post_url . '" target="_blank" class="text-orange-600 hover:underline">View on Facebook</a></p>';
+              echo '</div>';
+            }
+          } else {
+            echo '<p class="text-center text-gray-600">No Facebook posts available at the moment.</p>';
+          }
+        } catch (PDOException $e) {
+          error_log('Facebook posts error: ' . $e->getMessage());
+          echo '<p class="text-center text-red-600">Error loading posts. Please try again later.</p>';
+        }
+        ?>
         <p class="text-sm text-gray-600 text-center mt-4">
-          Note: Replace the placeholder URL with the canonical URL (e.g., https://www.facebook.com/groups/452408605995410/posts/YourPostID/). Click the post's timestamp in the Group to copy the URL. Automatic updates are not possible in static HTML.
+          Follow us on <a href="https://www.facebook.com" class="text-orange-600 hover:underline" target="_blank">Facebook</a> for more updates.
         </p>
       </div>
     </div>
@@ -308,19 +208,19 @@ session_start();
     <div class="container mx-auto px-4">
       <p class="text-lg mb-2">© 2025 Helping Hands. All rights reserved.</p>
       <div class="flex justify-center space-x-6">
-        <a href="https://facebook.com/groups/452408605995410/" class="social-icon" aria-label="Facebook">
+        <a href="https://facebook.com" class="social-icon" aria-label="Facebook">
           <svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
             <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
           </svg>
         </a>
         <a href="https://twitter.com" class="social-icon" aria-label="Twitter">
           <svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005 1.016-3.125 1.249-.897-.957-2.178-1.555-3.594-1.555-2.717 0-4.917 2.208-4.917 4.917 0 .385.045.757.127 1.115-4.083-.205-7.702-2.162-10.125-5.144-.424.729-.666 1.574-.666 2.475 0 1.708.869 3.216 2.188 4.099-.806-.026-1.566-.247-2.228-.616v.062c0 2.385 1.698 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.317 0-.626-.031-.928-.087.627 1.956 2.444 3.379 4.6 3.419-1.685 1.32-3.808 2.105-6.115 2.105-.398 0-.79-.023-1.175-.068 2.179 1.396 4.768 2.212 7.548 2.212 9.057 0 14.009-7.507 14.009-14.009 0-.213-.005-.425-.015-.636.961-.695 1.795-1.562 2.457-2.549z"/>
+            <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005 1.062-3.127 1.302c-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213.431 5.165 2.449 6.013-1.523-.077-2.958-.766-3.312 1.608-.354 1.874.826 3.236 2.289 3.236-.523.105-1.854.219-2.595 0 .181 2.087 2.027 3.713 3.827 3.146-1.653 1.396-3.009 1.937-4.789 1.937-.548 0-1.154-.085-1.687-.251 1.242 2.076 3.092 3.295 5.208 3.295 6.302 0 9.907-5.864 9.907-10.959 0-.166-.005-.735 0-.901.685-.493 1.279-1.461 2.169-2.274z"/>
           </svg>
         </a>
         <a href="https://instagram.com" class="social-icon" aria-label="Instagram">
           <svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.319 3.608 1.295.975.975 1.232 2.242 1.295 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.319 2.633-1.295 3.608-.975.975-2.242 1.232-3.608 1.295-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.319-3.608-1.295-.975-.975-1.232-2.242-1.295-3.608-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.319-2.633 1.295-3.608.975-.975 2.242-1.232 3.608-1.295 1.266-.058 1.646-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-1.406.062-2.732.335-3.771 1.374-1.039 1.039-1.312 2.365-1.374 3.771-.058 1.28-.072 1.688-.072 4.947s.014 3.667.072 4.947c.062 1.406.335 2.732 1.374 3.771 1.039 1.039 2.365 1.312 3.771 1.374 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c1.406-.062 2.732-.335 3.771-1.374 1.039-1.039 1.312-2.365 1.374-3.771.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.062-1.406-.335-2.732-1.374-3.771-1.039-1.039-2.365-1.312-3.771-1.374-1.28-.058-1.688-.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.441s.645 1.441 1.441 1.441 1.441-.645 1.441-1.441-.645-1.441-1.441-1.441z"/>
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.069-4.849.069-3.204 0-3.584-.012-4.849-.069-3.26-.149-4.771-1.699-4.919-4.92-.058-1.266-.069-1.645-.069-4.849 0-3.204.012-3.583.069-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-2.732 2.708-6.752 2.756v9.44c.004.004 4.4.152 6.772 2.772 4.28.058 5.688.072 4.948.072 0 0 3.259-.014 4.948-.072 4.354-.2 6.782-2.618 6.83-6.838v-9.482c-.044-.048-2.469-2.366-6.831-2.638-1.28-.058-1.688-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.162-2.759-6.163-6.759-6.162-2.759-6.162 0zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4 2.209 0 4 1.791 4 4 0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
           </svg>
         </a>
       </div>
@@ -335,8 +235,35 @@ session_start();
   <!-- Facebook SDK -->
   <div id="fb-root"></div>
   <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v20.0"></script>
-
   <script>
+    window.fbAsyncInit = function() {
+      try {
+        FB.init({
+          appId: '137449455672',
+          autoLogAppEvents: true,
+          xfbml: true,
+          version: 'v20.0'
+        });
+        console.log('Facebook SDK initialized');
+        if (document.querySelector('#facebook-feed')) {
+          FB.XFBML.parse(document.getElementById('facebook-feed'), function() {
+            console.log('Facebook posts parsed');
+            document.querySelectorAll('.fb-post').forEach(function(post) {
+              if (!post.querySelector('iframe')) {
+                post.innerHTML = '<p class="text-sm text-gray-500 text-center">Failed to load Facebook post. Please view on Facebook.</p>';
+              }
+            });
+          });
+        } catch (err) {
+          console.error('Facebook SDK error:', err);
+          if (document.querySelectorAll('.fb-post')) {
+            document.querySelectorAll('.fb-post').forEach(function(post) {
+              post.innerHTML = '<p class="text-sm text-gray-500 text-center'>Failed to load Facebook post. Please view on Facebook.</p>';
+            });
+          }
+        }
+      };
+
     // Smooth scrolling for navigation
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
@@ -357,15 +284,15 @@ session_start();
 
     // Lightbox functionality
     function openLightbox(src) {
-      const lightbox = document.getElementById('lightbox');
+      const lightBox = document.getElementById('lightbox');
       lightbox.querySelector('img').src = src;
-      lightbox.classList.add('active');
+      lightBox.classList.add('active');
       lightbox.focus();
     }
 
     function closeLightbox() {
-      const lightbox = document.getElementById('lightbox');
-      lightbox.classList.remove('active');
+      const lightBox = document.getElementById('lightbox');
+      lightBox.classList.remove('active');
     }
 
     // Form validation
@@ -375,16 +302,16 @@ session_start();
       const email = document.getElementById('email').value;
       const message = document.getElementById('message').value;
       if (name && email && message) {
-        alert('Form submitted (for demo purposes).');
+        alert('Form submitted successfully (for demo purposes).');
       } else {
         alert('Please fill out all fields.');
       }
-      return false; // Prevent actual submission in sandbox
+      return false;
     }
 
     // Keyboard accessibility for lightbox
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && document.getElementById('lightbox').classList.contains('active')) {
+      if (e.key === 'Escape' && document.getElementById('lightBox').classList.contains('active')) {
         closeLightbox();
       }
     });
@@ -393,64 +320,77 @@ session_start();
     let imageList = [];
     let currentSlide = 0;
 
-    function initializeSlideshow() {
-      const slideshowContainer = document.querySelector('.slideshow-container');
+    function initializeSlideShow() {
+      const slideShowContainer = document.querySelector('.slideshow-container');
       const dotsContainer = document.querySelector('.dots');
+      const message = document.getElementById('gallery-message');
 
-      // Fetch images from database
-      fetch('get_images.php')
-        .then(response => response.json())
-        .then(data => {
-          imageList = data;
-          if (imageList.length === 0) {
-            const message = document.createElement('p');
+      fetch('getImages.php')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+          message.style.display = 'none';
+          if (!Array.isArray(data) || data.length === 0) {
             message.textContent = 'No images available.';
-            message.className = 'text-center text-gray-600';
-            slideshowContainer.appendChild(message);
+            message.style.display = 'block';
             return;
           }
 
-          // Create slides
+          imageList = data;
           imageList.forEach((image, index) => {
-            const img = document.createElement('img');
-            img.src = image.path;
-            img.alt = image.alt_text;
-            img.className = 'slide gallery-img';
-            img.setAttribute('loading', 'lazy');
-            img.onclick = () => openLightbox(image.path);
-            slideshowContainer.insertBefore(img, slideshowContainer.querySelector('.prev'));
+            if (image.path && image.path.trim() !== '') {
+              const img = document.createElement('img');
+              img.src = image.path;
+              img.alt = image.alt_text || 'Gallery image';
+              img.className = 'slide-img';
+              img.setAttribute('loading', 'lazy');
+              img.onclick = () => openLightbox(image.path);
+              slideshowContainer.insertBefore(img, slideshowContainer.querySelector('.prev'));
 
-            // Create dots
-            const dot = document.createElement('span');
-            dot.className = 'dot';
-            dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
-            dot.onclick = () => goToSlide(index);
-            dotsContainer.appendChild(dot);
+              const dot = document.createElement('span');
+              dot.className = 'dot';
+              dot.setAttribute('aria-label', 'Go to slide ${index + 1}');
+              dot.onclick = () => goToSlide(index);
+              dotsContainer.appendChild(dot);
+            }
           });
 
-          // Show first slide
-          showSlide(currentSlide);
+          if (imageList.length > 0) {
+            showSlide(currentSlide);
+          } else {
+            message.textContent = 'No valid images found.';
+            message.style.display = 'block';
+          }
         })
-        .catch(error => {
+      .catch(error => {
           console.error('Error fetching images:', error);
-          const message = document.createElement('p');
-          message.textContent = 'Error loading images.';
-          message.className = 'text-center text-red-600';
-          slideshowContainer.appendChild(message);
+          message.textContent = 'Error loading images. Please try again later.';
+          message.style.display = 'block';
         });
     }
 
     function showSlide(index) {
       const slides = document.querySelectorAll('.slide');
       const dots = document.querySelectorAll('.dot');
+      if (slides.length === 0) {
+        document.getElementById('gallery-message').style.display = 'block';
+        return;
+      }
 
-      if (slides.length === 0) return;
+      if (index >= slides.length) {
+        currentSlide = 0;
+      }
+      if (index < 0) {
+        currentSlide = slides.length - 1;
+      }
+      else {
+        currentSlide = index;
+      }
 
-      // Wrap around
-      if (index >= slides.length) currentSlide = 0;
-      if (index < 0) currentSlide = slides.length - 1;
-
-      // Update slides and dots
       slides.forEach(slide => slide.classList.remove('active'));
       dots.forEach(dot => dot.classList.remove('active'));
       slides[currentSlide].classList.add('active');
@@ -458,50 +398,57 @@ session_start();
     }
 
     function changeSlide(n) {
-      currentSlide += n;
-      showSlide(currentSlide);
+      showSlide(currentSlide + n);
     }
 
     function goToSlide(index) {
-      currentSlide = index;
-      showSlide(currentSlide);
+      showSlide(index);
     }
 
-    // Auto-advance slideshow every 5 seconds
     setInterval(() => {
-      changeSlide(1);
+      if (document.querySelectorAll('slide').length > 0) {
+        changeSlide(1);
+      }
     }, 5000);
 
-    // Initialize slideshow when DOM is loaded
-    document.addEventListener('DOMContentLoaded', initializeSlideshow);
-
-    // Keyboard accessibility for slideshow
     document.addEventListener('DOMContentLoaded', () => {
-      const slideshow = document.querySelector('.slideshow-container');
-      slideshow.setAttribute('tabindex', '0');
-      slideshow.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') changeSlide(-1);
-        if (e.key === 'ArrowRight') changeSlide(1);
-      });
+      initializeSlideshow();
+      if (typeof FB === 'undefined' && document.querySelector('#facebook-feed')) {
+        console.log('Facebook SDK not loaded');
+        document.querySelectorAll('.fb-post').forEach(post => {
+          post.innerHTML = '<p class="text-sm text-gray-500 text-center">Failed to load image post. Please view on Facebook.</p>';
+        });
+      }
     });
 
-    // Fade-in animation for sections on scroll
+    document.addEventListener('DOMContentLoaded', () => {
+      const slideshow = document.querySelector('.slideshow-container');
+      slideshow.setAttribute('content-type', 'tabindex', '0');
+      slideshow.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowLeft') {
+          changeSlide(-1);
+        }
+        if (event.key === 'ArrowRight') {
+          changeSlide(1);
+        }
+      });
+    }
+
     const sections = document.querySelectorAll('section');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.style.opacity = 1;
-          entry.target.style.transform = 'translateY(0)';
+          section.entry.target.style.opacity = '1';
+          section.entry.target.style.transform = 'translateY(0)';
         }
       });
     }, { threshold: 0.1 });
 
     sections.forEach(section => {
-      section.style.opacity = 0;
-      section.style.transform = 'translateY(20px)';
-      section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      section.style.setProperty('opacity', '0');
+      section.style.setProperty('transform', 'translateY(20px)');
+      section.style.setProperty('transition', 'opacity 0.5s ease, transform 0.5s ease');
       observer.observe(section);
-    });
+    }));
   </script>
-</body>
 </html>

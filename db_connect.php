@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost';
-$dbname = 'helping_hands';
-$username = 'root'; // Replace with your MySQL username
-$password = ''; // Replace with your MySQL password
+$dbname = 'u102833347_helpinghands';
+$username = 'u102833347_hhands'; // Replace with your MySQL username
+$password = 'fmrcF1Co&'; // Replace with your MySQL password
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
