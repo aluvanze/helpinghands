@@ -118,16 +118,25 @@ error_reporting(E_ALL);
       <h2 class="text-4xl font-bold text-center mb-8 text-gray-800">Our Projects</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="project-card bg-white p-6 rounded-2xl shadow-lg">
-          <h3 class="text-2xl font-semibold mb-2 text-orange-600">Education Program</h3>
-          <p class="text-gray-600">Bringing free education and resources to children in rural areas, sparking curiosity and growth.</p>
+          <h3 class="text-2xl font-semibold mb-2 text-orange-600"> Water is Life Initiative
+          </h3>
+          <p class="text-gray-600">By providing clean water and transforming lives, we’re making a difference for thousands in Kenya's coastal region who still face daily struggles to access this essential resource. Our "Water is Life" initiative is committed to tackling water scarcity in Pwani Counties by offering sustainable water solutions, health education, and empowering the community.
+          </p>
         </div>
         <div class="project-card bg-white p-6 rounded-2xl shadow-lg">
-          <h3 class="text-2xl font-semibold mb-2 text-blue-600">Healthcare Initiative</h3>
-          <p class="text-gray-600">Mobile clinics spreading health and happiness with free checkups and treatments.</p>
+          <h3 class="text-2xl font-semibold mb-2 text-blue-600">The Ramadhan and Beyond 
+          </h3>
+          <p class="text-gray-600">It is a heartfelt initiative designed to provide nutritious meals and essential food supplies to vulnerable families, orphans, and marginalized communities throughout the Pwani region during the holy month of Ramadhan, with ongoing support even after. The goal of this project is to combat hunger, nurture compassion, and encourage sustainable food security by distributing food packages, organizing community iftar events, and backing long-term food sustainability projects</p>
         </div>
         <div class="project-card bg-white p-6 rounded-2xl shadow-lg">
-          <h3 class="text-2xl font-semibold mb-2 text-green-600">Sustainable Farming</h3>
-          <p class="text-gray-600">Training farmers in eco-friendly practices to nurture the earth and communities.</p>
+          <h3 class="text-2xl font-semibold mb-2 text-blue-600">Project REDSPOT(pad drive) 
+          </h3>
+          <p class="text-gray-600">The Pads Drive stands as a commendable gesture by Helping Hands Pwani in assisting pubescent girls in marginalized communities. Having access to sanitary pads enables girls to stay in school, renders them more confident, and raises the stigma against menstruation—a vital facet of gender equality. 
+          </p>
+        </div>
+        <div class="project-card bg-white p-6 rounded-2xl shadow-lg">
+          <h3 class="text-2xl font-semibold mb-2 text-green-600">Feeding Orphans</h3>
+          <p class="text-gray-600"> Project tackles childhood hunger by giving nourishing hot meals to orphans and other vulnerable children living through Kenya's coastal region. Our community-based initiative grants habitual access to balanced meals, throwing in immediate hunger alleviation with horizontal growth support. Most of the orphan children in our communities do not have access to regular healthy meals that would positively affect their growth, education, and development. The project assists children by ensuring orphans are fed hot meals in the shelters, schools, and care centers so that they can have the food to nourish them to growth..</p>
         </div>
       </div>
     </div>
