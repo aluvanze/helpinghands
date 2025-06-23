@@ -96,7 +96,7 @@ error_reporting(E_ALL);
     <div class="bg-black bg-opacity-50 p-8 rounded-2xl animate-pulse">
       <h2 class="text-5xl font-bold mb-4">We are Helping Hands Pwani</h2>
       <p class="text-xl mb-6">Team Kazi & Accountability</p>
-      <a href="#contact" class="btn-primary text-white px-6 py-3 rounded-full font-semibold">Get Involved</a>
+      <a href="#projects" class="btn-primary text-white px-6 py-3 rounded-full font-semibold">Donate</a>
     </div>
   </section>
 
