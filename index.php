@@ -197,9 +197,9 @@ error_reporting(E_ALL);
     <div class="container mx-auto px-4">
       <h2 class="text-4xl font-bold text-center mb-8 text-gray-800">Contact Us</h2>
       <div class="max-w-lg mx-auto">
-        <p class="text-lg text-gray-700 mb-2">Email: <a href="mailto:info@helpinghands.org" class="text-orange-600 hover:underline">info@helpinghands.org</a></p>
-        <p class="text-lg text-gray-700 mb-2">Phone: <a href="tel:+1234567890" class="text-orange-600 hover:underline">+123-456-7890</a></p>
-        <p class="text-lg text-gray-700 mb-6">Address: 123 Community Lane, City, Country</p>
+        <p class="text-lg text-gray-700 mb-2">Email: <a href="mailto:helpinghandspwani@gmail.com" class="text-orange-600 hover:underline">info@helpinghands.org</a></p>
+        <p class="text-lg text-gray-700 mb-2">Phone: <a href="tel:+254722865080\0727377717" class="text-orange-600 hover:underline">+123-456-7890</a></p>
+        <p class="text-lg text-gray-700 mb-6">Address: P.O. BOX 40040-80100 MOMBASA.</p>
         <form class="contact-form bg-white p-8 rounded-2xl shadow-lg" onsubmit="return validateForm(event)">
           <h3 class="text-2xl font-semibold mb-4 text-gray-800">Send a Message</h3>
           <input type="text" id="name" placeholder="Your Name" class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400" required aria-label="Your Name">
